@@ -10,6 +10,21 @@ from sam2.sam2_image_predictor import SAM2ImagePredictor
 from metrics import Metrics
 from helper_functions import HelperFunctions
 
+import argparse
+
+# Defines the ArgumentParser object
+parser = argparse.ArgumentParser()
+
+# Hyperparameters
+parser.add_argument("--file_start_number", type=int, default=1)
+parser.add_argument("--file_end_number", type=int, default=10)
+parser.add_argument("--width", type=int, default=1024)
+parser.add_argument("--height", type=int, default=1024)
+parser.add_argument("--multi_mask", type=bool, default=True)
+parser.add_argument("--sam2_checkpoint", type=str, default='C:/model_weights/sam-2/sam2_hiera_base_plus.pt')
+parser.add_argument("--model_cfg", type=str, default='C:/Users/r02sw23/PycharmProjects/pythonProject1/.venv/PANet-master-borebreen-sam2/sam2_configs/sam2_hiera_b+.yaml')
+# ------------------------------------------------------------------------
+
 
 # Initialize SAM 2 model
 def load_sam2_model(checkpoint_path, model_cfg="sam2_hiera_l.yaml"):
@@ -119,11 +134,12 @@ def segment_with_pascal_voc_mask(predictor, image_path, mask_path, class_id=None
 if __name__ == "__main__":
     
     def main():
+        # Creates the ArgumentParser object in the main function
+        args = parser.parse_args()
+        
         # Paths
-        checkpoint = 'C:/model_weights/sam-2/sam2_hiera_base_plus.pt'
-        model_cfg = 'C:/Users/r02sw23/PycharmProjects/pythonProject1/.venv/PANet-master-borebreen-sam2/sam2_configs/sam2_hiera_b+.yaml'
+        
         output_path = 'C:/Users/r02sw23/PycharmProjects/pythonProject1/.venv/A18-SAM-2-model-distributed-3GPUs/'
-        tot_image_no = 10
 
         # Use bfloat16 for the entire runtime
         torch.autocast(device_type="cuda", dtype=torch.bfloat16).__enter__()
@@ -152,12 +168,12 @@ if __name__ == "__main__":
         # Defiens the HelperFunctions object
         helper = HelperFunctions()
 
-        for i in range(1, tot_image_no+1):
+        for i in range(args.file_start_number, args.file_end_number+1):
             image_path = f"C:/Users/r02sw23/Documents/borebreen-drone-image-data/masks/borebreen_crop_drone_{i}.png"
             voc_mask_path = f'C:/Users/r02sw23/PycharmProjects/pythonProject1/.venv/A13_Supervised_LR_FNN_LSTM_borebreen/LR/test_results/borebreen_crop_drone_{i}.png'
     
             # Load model
-            predictor = load_sam2_model(checkpoint, model_cfg)
+            predictor = load_sam2_model(args.sam2_checkpoint, args.model_cfg)
 
             # Option 1: Use all object pixels as prompt
             masks, scores, logits = segment_with_pascal_voc_mask(
