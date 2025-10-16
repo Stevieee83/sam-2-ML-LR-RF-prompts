@@ -48,15 +48,17 @@ def main():
     args = parser.parse_args()
 
     # File path directory for the input images
-    dir_images=f'./data/images/borebreen_crop_drone_{str(args.file_number)}.png'        # Input image file path directory
+    dir_images=f'C:/Users/r02sw23/Documents/borebreen-drone-image-data/images/borebreen_crop_drone_{str(args.file_number)}.png'        # Input image file path directory
     path = f'./results/multi_mask_single_point/{args.model_cfg}/borebreen_image_{str(args.file_number)}_1BG_1FG/'  # Creates the file path for the output results
     output_mask_1 = f"borebreen_image_{str(args.file_number)}_mask_1.png"               # Output segmentation mask file path directory
     output_mask_2 = f"borebreen_image_{str(args.file_number)}_mask_2.png"               # Output segmentation mask file path directory
     output_mask_3 = f"borebreen_image_{str(args.file_number)}_mask_3.png"               # Output segmentation mask file path directory
 
     # Segmentation metrics file path directories
-    gt_name = f'./data/masks/borebreen_crop_drone_{str(args.file_number)}.png'          # Image ground truth masks file path directory
-    output_path = f'./results/single_mask_single_point/{args.model_cfg}/borebreen_image_{str(args.file_number)}_1BG_1FG/output_masks/'  # Output filepath directory for the segmentation mask results
+    gt_name = f'C:/Users/r02sw23/Documents/borebreen-drone-image-data/masks/borebreen_crop_drone_{str(args.file_number)}.png'          # Image ground truth masks file path directory
+    output_path = f'./results/multi_mask_single_point/{args.model_cfg}/image_{str(args.file_number)}/output_masks/'  # Output filepath directory for the segmentation mask results
+
+    voc_mask_path = 'C:/Users/r02sw23/PycharmProjects/pythonProject1/.venv/A13_Supervised_LR_FNN_LSTM_borebreen/LR/test_results/borebreen_crop_drone_1.png'
     # ------------------------------------------------------------------------
 
     # Use bfloat16 for the entire runtime
@@ -110,7 +112,7 @@ def main():
         #point_labels=input_label,
         #multimask_output=args.multi_mask,
     #)
-    voc_mask_path = 'C:/Users/r02sw23/PycharmProjects/pythonProject1/.venv/A13_Supervised_LR_FNN_LSTM_borebreen/LR/test_results/borebreen_crop_drone_1.png'
+    
     mask_input = cv2.imaread(voc_mask_path, 0)
     mask_input_resized = cv2.resize(mask_input, (256, 256), interpolation=cv2.INTER_AREA)
     mask_input_reshaped = mask_input_resized.reshape(1, 1, 256, 256)
