@@ -120,7 +120,7 @@ if __name__ == "__main__":
     output_path = 'C:/Users/r02sw23/PycharmProjects/pythonProject1/.venv/A18-SAM-2-model-distributed-3GPUs/'
     tot_image_no = 10
 
-    os.makedirs(output_path, exist_os=True)
+    os.makedirs(output_path, exist_ok=True)
 
     for i in range(1, tot_image_no+1):
         image_path = f"C:/Users/r02sw23/Documents/borebreen-drone-image-data/masks/borebreen_crop_drone_{i}.png"
