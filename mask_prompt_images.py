@@ -7,6 +7,9 @@ import os
 from sam2.build_sam import build_sam2
 from sam2.sam2_image_predictor import SAM2ImagePredictor
 
+from metrics import Metrics
+from helper_functions import HelperFunctions
+
 
 # Initialize SAM 2 model
 def load_sam2_model(checkpoint_path, model_cfg="sam2_hiera_l.yaml"):
@@ -122,7 +125,32 @@ if __name__ == "__main__":
         output_path = 'C:/Users/r02sw23/PycharmProjects/pythonProject1/.venv/A18-SAM-2-model-distributed-3GPUs/'
         tot_image_no = 10
 
+        # Use bfloat16 for the entire runtime
+        torch.autocast(device_type="cuda", dtype=torch.bfloat16).__enter__()
+
+        if torch.cuda.get_device_properties(0).major >= 8:
+            # turn on tfloat32 for Ampere GPUs (https://pytorch.org/docs/stable/notes/cuda.html#tensorfloat-32-tf32-on-ampere-devices)
+            torch.backends.cuda.matmul.allow_tf32 = True
+            torch.backends.cudnn.allow_tf32 = True
+
+        # Sets the device and the random seeds
+        if torch.cuda.is_available():
+            # Sets the device to CUDA GPU
+            device = 'cuda'
+            # Set random seed for GPU
+            torch.cuda.manual_seed(42)
+            torch.cuda.manual_seed_all(42)
+    
+        else:
+            # Sets the device to CUDA GPU
+            device = 'cpu'
+            # Set random seed for CPU
+            torch.cuda.manual_seed(42)
+
         os.makedirs(output_path, exist_ok=True)
+
+        # Defiens the HelperFunctions object
+        helper = HelperFunctions()
 
         for i in range(1, tot_image_no+1):
             image_path = f"C:/Users/r02sw23/Documents/borebreen-drone-image-data/masks/borebreen_crop_drone_{i}.png"
