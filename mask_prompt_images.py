@@ -152,7 +152,7 @@ if __name__ == "__main__":
         result_mask.save(output_path + f"output_refined_mask_{i}.png")
 
         # Optionally: Save all masks
-        for i, (mask, score) in enumerate(zip(masks, scores)):
+        for j, (mask, score) in enumerate(zip(masks, scores)):
             mask_img = Image.fromarray((mask * 255).astype(np.uint8))
 
-            mask_img.save(output_path + f"output_mask_{i}_score_{score:.3f}.png")
+            mask_img.save(output_path + f"output_mask_{i}_{j}_score_{score:.3f}.png")
