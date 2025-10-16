@@ -23,7 +23,6 @@ parser.add_argument("--height", type=int, default=1024)
 parser.add_argument("--multi_mask", type=bool, default=True)
 parser.add_argument("--sam2_checkpoint", type=str, default='C:/model_weights/sam-2/sam2_hiera_base_plus.pt')
 parser.add_argument("--model_cfg", type=str, default='C:/Users/r02sw23/PycharmProjects/pythonProject1/.venv/PANet-master-borebreen-sam2/sam2_configs/sam2_hiera_b+.yaml')
-parser.add_argument("--output_path", type=str, default='C:/Users/r02sw23/PycharmProjects/pythonProject1/.venv/A18-SAM-2-model-distributed-3GPUs/')
 # ------------------------------------------------------------------------
 
 
@@ -184,7 +183,7 @@ if __name__ == "__main__":
 
             ######################################## Muti-Mask 1 ##########################################
             if args.multi_mask:
-                path = f'./results/multi_mask_single_point/{args.model_cfg}/image_{i}/'  # Creates the file path for the output results
+                path = f'./results/multi_mask/{args.model_cfg}/image_{i}/'  # Creates the file path for the output results
                 # Calls the make_dir Python helper function
                 os.makedirs(path, exist_ok=True)
     
