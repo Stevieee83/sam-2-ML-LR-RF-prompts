@@ -160,7 +160,7 @@ if __name__ == "__main__":
             # Set random seed for CPU
             torch.cuda.manual_seed(42)
 
-        os.makedirs(args.output_path, exist_ok=True)
+        os.makedirs(path, exist_ok=True)
 
         # Defiens the HelperFunctions object
         helper = HelperFunctions()
@@ -184,6 +184,9 @@ if __name__ == "__main__":
 
             ######################################## Muti-Mask 1 ##########################################
             if args.multi_mask:
+                path = f'./results/multi_mask_single_point/{args.model_cfg}/image_{i}/'  # Creates the file path for the output results
+                # Calls the make_dir Python helper function
+                os.makedirs(path, exist_ok=True)
     
                 # Stores the output masks from the SAM 2 model inside a Python list
                 out_masks = []
@@ -499,7 +502,10 @@ if __name__ == "__main__":
                 plt.show()
 
             else:
-
+                output_path = f'./results/single_mask/{args.model_cfg}/image_{i}/'  # Output filepath directory for the segmentation mask results
+                # Calls the make_dir Python helper function
+                os.makedirs(output_path, exist_ok=True)
+                
                 # Stores the output masks from the SAM 2 model inside a Python list
                 out_masks = []
 
@@ -511,7 +517,7 @@ if __name__ == "__main__":
                     helper.show_points(input_point, input_label, plt.gca())
                     plt.title(f"Mask {i + 1}, Score: {score:.3f}", fontsize=18)
                     plt.axis('on')
-                    plt.savefig(args.output_path + 'output_image_' + str(i + 1) + '.png')
+                    plt.savefig(output_path + 'output_image_' + str(i + 1) + '.png')
                     out_masks.append(mask)
                     plt.show()
 
@@ -522,9 +528,9 @@ if __name__ == "__main__":
                 plt.figure(figsize=(10.24, 10.24))
                 plt.imshow(out_masks[0])
                 plt.axis('off')
-                plt.savefig(args.output_path + 'mask_1.png')
+                plt.savefig(output_path + 'mask_1.png')
                 segmented = out_masks[0].astype(int)
-                cv2.imwrite(args.output_path + output_mask_1, segmented)
+                cv2.imwrite(output_path + output_mask_1, segmented)
                 plt.show()
 
                 # Setting the number of rows and columns for the subplot figures
@@ -548,14 +554,14 @@ if __name__ == "__main__":
                 fig.add_subplot(rows, columns, 3)
 
                 # Segmentation mask over image subplot
-                image0 = cv2.imread(args.output_path + 'output_image_1.png')
+                image0 = cv2.imread(output_path + 'output_image_1.png')
                 image_temp = cv2.cvtColor(image0, cv2.COLOR_BGR2RGB)
                 image0 = cv2.resize(image_temp, (1000, 1000), interpolation=cv2.INTER_LINEAR)
                 plt.imshow(image0)
                 plt.axis('off')
 
                 # Saves the Matplotlib figure to the outputs file directory
-                plt.savefig(args.output_path + 'output_image_all_1.png')
+                plt.savefig(output_path + 'output_image_all_1.png')
 
                 # Displays the subplot figure to the screen
                 plt.show()
@@ -568,7 +574,7 @@ if __name__ == "__main__":
 
                 # Stores the input image, segmentation masks and ground truth masks as NumPy arrays
                 image = cv2.imread(dir_images)
-                mask = cv2.imread(args.output_path + output_mask_1, 0)
+                mask = cv2.imread(output_path + output_mask_1, 0)
                 gt = cv2.imread(gt_name, 0)
 
                 # Stores the mask and ground truth as a Pytorch tensor from the to_tensor helper function
@@ -606,7 +612,7 @@ if __name__ == "__main__":
                 plt.imshow(mask)
                 plt.title('Segmented Image'), plt.xticks([]), plt.yticks([])
                 plt.axis('off')
-                plt.savefig(args.output_path + 'mask_only_1.png')
+                plt.savefig(output_path + 'mask_only_1.png')
                 plt.show()
 
                 # Display the ground truth mask on the screen and save it as an image
@@ -614,7 +620,7 @@ if __name__ == "__main__":
                 plt.figure(figsize=(figure_size, figure_size))
                 plt.imshow(gt)
                 plt.title('Ground Truth'), plt.xticks([]), plt.yticks([])
-                plt.savefig(args.output_path + 'gt_only_1.png')
+                plt.savefig(output_path + 'gt_only_1.png')
                 plt.show()
         
         
@@ -665,10 +671,10 @@ if __name__ == "__main__":
 
         # Save result
         result_mask = Image.fromarray((best_mask * 255).astype(np.uint8))
-        result_mask.save(args.output_path + f"output_refined_mask_{i}.png")
+        result_mask.save(output_path + f"output_refined_mask_{i}.png")
 
         # Optionally: Save all masks
         for j, (mask, score) in enumerate(zip(masks, scores)):
             mask_img = Image.fromarray((mask * 255).astype(np.uint8))
 
-            mask_img.save(args.output_path + f"output_mask_{i}_{j}_score_{score:.3f}.png")
+            mask_img.save(output_path + f"output_mask_{i}_{j}_score_{score:.3f}.png")
